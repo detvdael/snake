@@ -1,4 +1,4 @@
-CC		=	gcc
+CC	=	gcc
 CFLAGS	=	-Wall -Wextra -Werror -pedantic -g -std=c11
 LDFLAGS	=
 LIBS	=	-lm -lcurses

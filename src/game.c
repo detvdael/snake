@@ -5,7 +5,7 @@
 #include "game.h"
 
 int main(){
-    int ch, p_height, p_width;
+    int ch, p_height, p_width, i;
     int score = 0;
     int quit = 0;
     WINDOW *p_win;
@@ -15,52 +15,52 @@ int main(){
     food *food;
     srand(time(NULL));
 
-    //initialize ncurses
+    /*initialize ncurses*/
     initscr();
-    cbreak();   //line buffering disabled
+    cbreak();   /*line buffering disabled*/
     noecho();
     keypad(stdscr, TRUE);
     curs_set(0);
     start_color();
     init_pair(1, COLOR_CYAN, COLOR_BLACK);
 
-    //initialize windows
+    /*initialize windows*/
     p_height = LINES-2;
     p_width = COLS-2;
     p_win = newwin(p_height, p_width, 1, 1);
 
     draw_borders(p_win);
 
-    //initialize snake
+    /*initialize snake*/
     head = malloc(sizeof(snake_part));
     head->x = 6;
     head->y = 1;
     ptr = head;
-    for(int i = 5; i > 0; --i){
+    for(i = 5; i > 0; --i){
         snake_part *tail = malloc(sizeof(snake_part));
         tail->x = i;
         tail->y = 1;
         ptr->tail = tail;
         ptr = ptr->tail;
     }
-    
-    //initialize food
+
+    /*initialize food*/
     food = malloc(sizeof(food));
     food->x = (rand() % (p_width - 2)) + 1;
     food->y = (rand() % (p_height - 2)) + 1;
 
-    //draw initial snake & food
+    /*draw initial snake & food*/
     draw_snake(p_win, head);
     draw_food(p_win, food, head);
 
-    //draw initial score
+    /*draw initial score*/
     draw_score(stdscr, score);
 
     wrefresh(p_win);
 
-    //game loop
-    timeout(100);   //loop doesn't wait for keyboard input
-    
+    /*game loop*/
+    timeout(100);   /*loop doesn't wait for keyboard input*/
+
     while(!quit){
         ch = getch();
         switch(ch){
@@ -84,7 +84,7 @@ int main(){
                     dir = DOWN;
                 }
                 break;
-            case 113:   //q -> quit
+            case 113:   /*q -> quit*/
                 quit = 1;
                 break;
             default:
@@ -93,7 +93,7 @@ int main(){
         current_dir = dir;
 
         werase(p_win);
-        //Snake logic
+        /*Snake logic*/
         n_head = malloc(sizeof(snake_part));
         n_head->x = head->x + x_dir[dir];
         n_head->y = head->y + y_dir[dir];
@@ -117,7 +117,7 @@ int main(){
         wnoutrefresh(p_win);
         doupdate();
     }
-    
+
     free_snake(head);
     free(food);
     endwin();
@@ -147,17 +147,17 @@ void free_snake(snake_part *snake){
 void draw_borders(WINDOW *p_win) {
     int x, y, i;
     getmaxyx(p_win, y, x);
-    // 4 corners
+    /* 4 corners*/
     mvwprintw(p_win, 0, 0, "+");
     mvwprintw(p_win, y - 1, 0, "+");
     mvwprintw(p_win, 0, x - 1, "+");
     mvwprintw(p_win, y - 1, x - 1, "+");
-    // sides
+    /* sides*/
     for (i = 1; i < (y - 1); i++) {
         mvwprintw(p_win, i, 0, "|");
         mvwprintw(p_win, i, x - 1, "|");
     }
-    // top and bottom
+    /* top and bottom*/
     for (i = 1; i < (x - 1); i++) {
         mvwprintw(p_win, 0, i, "-");
         mvwprintw(p_win, y - 1, i, "-");
@@ -165,7 +165,7 @@ void draw_borders(WINDOW *p_win) {
 }
 
 void draw_score(WINDOW *p_win, int score){
-    //calc length of score
+    /*calc length of score*/
     int digits = score == 0 ? 1 : (int)floor(log10(abs(score))) + 1;
     werase(p_win);
     attron(COLOR_PAIR(1));
